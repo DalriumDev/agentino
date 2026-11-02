@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentino | ایجنتینو</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Tahoma, Arial, sans-serif;
+      background: #0b1020;
+      color: #f4f6ff;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: #11182b;
+      padding: 25px 18px;
+      border-left: 1px solid #252d45;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
+      color: #8b9cff;
+      margin-bottom: 35px;
+    }
+
+    .new-chat {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #424d70;
+      border-radius: 12px;
+      color: white;
+      background: #202944;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    header {
+      padding: 20px 30px;
+      border-bottom: 1px solid #252d45;
+      font-size: 17px;
+    }
+
+    .welcome {
+      margin: auto;
+      text-align: center;
+      padding: 25px;
+    }
+
+    .welcome h1 {
+      font-size: 35px;
+      margin-bottom: 18px;
+      color: #a5b1ff;
+    }
+
+    .welcome p {
+      color: #aab2c8;
+      line-height: 2;
+    }
+
+    .chat {
+      width: 100%;
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .message {
+      padding: 16px;
+      margin: 15px 0;
+      border-radius: 15px;
+      line-height: 2;
+      white-space: pre-wrap;
+    }
+
+    .user {
+      background: #202944;
+    }
+
+    .bot {
+      background: #151d32;
+      border: 1px solid #293450;
+    }
+
+    .input-area {
+      padding: 20px;
+      width: 100%;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .input-box {
+      display: flex;
+      gap: 10px;
+      background: #171f34;
+      border: 1px solid #384461;
+      border-radius: 16px;
+      padding: 10px;
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: white;
+      font-family: inherit;
+      font-size: 16px;
+      padding: 10px;
+      min-height: 45px;
+    }
+
+    .send {
+      background: #7486ff;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0 22px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .send:hover {
+      background: #5e71ed;
+    }
+
+    .note {
+      text-align: center;
+      font-size: 11px;
+      color: #77819b;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 650px) {
+      .sidebar {
+        display: none;
+      }
+
+      .welcome h1 {
+        font-size: 27px;
+      }
+
+      header {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <aside class="sidebar">
+    <div class="logo">✦ Agentino</div>
+    <button class="new-chat" onclick="newChat()">＋ گفت‌وگوی جدید</button>
+  </aside>
+
+  <main class="main">
+    <header>ایجنتینو | مشاور هوشمند تو</header>
+
+    <section class="welcome" id="welcome">
+      <h1>سلام! من ایجنتینو هستم 👋</h1>
+      <p>
+        ایده‌هات رو با من در میون بذار.<br>
+        با هم راه‌حل پیدا می‌کنیم و قدم‌به‌قدم جلو می‌ریم.
+      </p>
+    </section>
+
+    <section class="chat" id="chat"></section>
+
+    <div class="input-area">
+      <div class="input-box">
+        <textarea id="message" placeholder="سؤالت رو اینجا بنویس..." rows="1"></textarea>
+        <button class="send" onclick="sendMessage()">ارسال ↑</button>
+      </div>
+      <div class="note">ایجنتینو ممکن است اشتباه کند؛ پاسخ‌ها را بررسی کن.</div>
+    </div>
+  </main>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("message");
+    const welcome = document.getElementById("welcome");
+
+    function addMessage(text, type) {
+      const div = document.createElement("div");
+      div.className = "message " + type;
+      div.textContent = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+      return div;
+    }
+
+    async function sendMessage() {
+      const message = input.value.trim();
+
+      if (!message) return;
+
+      welcome.style.display = "none";
+      addMessage(message, "user");
+      input.value = "";
+
+      const loading = addMessage("در حال فکر کردن... ✨", "bot");
+
+      // اتصال هوش مصنوعی را در مرحله بعد فعال می‌کنیم
+      setTimeout(() => {
+        loading.textContent =
+          "سلام! محیط چت ایجنتینو آماده شده 💚\n" +
+          "در مرحله بعد، مغز هوش مصنوعی را به من وصل می‌کنیم.";
+      }, 700);
+    }
+
+    function newChat() {
+      chat.innerHTML = "";
+      welcome.style.display = "block";
+      input.value = "";
+    }
+
+    input.addEventListener("keydown", function(event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+
+</body>
+</html>
