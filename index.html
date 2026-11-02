@@ -2,287 +2,1021 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agentino | ایجنتینو</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentino | ایجنتینو</title>
 
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
 
-    body {
-      font-family: Tahoma, Arial, sans-serif;
-      background: #0b1020;
-      color: #f4f6ff;
-      min-height: 100vh;
-      display: flex;
-    }
+:root {
+  --bg: #090d19;
+  --sidebar: #0e1424;
+  --panel: #121a2c;
+  --panel-light: #192239;
+  --border: #27324a;
+  --text: #f1f4ff;
+  --muted: #8e9bb5;
+  --accent: #8b7cff;
+  --accent2: #54c8ff;
+  --user: #252d48;
+}
 
-    .sidebar {
-      width: 250px;
-      background: #11182b;
-      padding: 25px 18px;
-      border-left: 1px solid #252d45;
-    }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    .logo {
-      font-size: 25px;
-      font-weight: bold;
-      color: #8b9cff;
-      margin-bottom: 35px;
-    }
+body {
+  font-family: 'Vazirmatn', Tahoma, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
 
-    .new-chat {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #424d70;
-      border-radius: 12px;
-      color: white;
-      background: #202944;
-      cursor: pointer;
-      font-size: 15px;
-    }
+button, textarea {
+  font-family: inherit;
+}
 
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
+button {
+  cursor: pointer;
+}
 
-    header {
-      padding: 20px 30px;
-      border-bottom: 1px solid #252d45;
-    }
+.sidebar {
+  width: 275px;
+  flex-shrink: 0;
+  background: var(--sidebar);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 22px 16px;
+  transition: transform .3s ease;
+  z-index: 10;
+}
 
-    .welcome {
-      margin: auto;
-      text-align: center;
-      padding: 25px;
-    }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 8px 28px;
+}
 
-    .welcome h1 {
-      font-size: 35px;
-      margin-bottom: 18px;
-      color: #a5b1ff;
-    }
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #8b7cff, #4c9fff);
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+  box-shadow: 0 5px 25px #7565ff35;
+}
 
-    .welcome p {
-      color: #aab2c8;
-      line-height: 2;
-    }
+.brand-name {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -.5px;
+}
 
-    .chat {
-      width: 100%;
-      max-width: 850px;
-      margin: 0 auto;
-      padding: 20px;
-      flex: 1;
-      overflow-y: auto;
-    }
+.brand-name span {
+  color: var(--accent);
+}
 
-    .message {
-      padding: 16px;
-      margin: 15px 0;
-      border-radius: 15px;
-      line-height: 2;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-    }
+.new-chat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px;
+  border: 1px solid #3b4564;
+  border-radius: 13px;
+  color: white;
+  background: linear-gradient(135deg, #252e4b, #1b233b);
+  font-size: 14px;
+  transition: .2s;
+}
 
-    .user { background: #202944; }
+.new-chat:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
 
-    .bot {
-      background: #151d32;
-      border: 1px solid #293450;
-    }
+.sidebar-label {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 26px 8px 12px;
+}
 
-    .input-area {
-      padding: 20px;
-      width: 100%;
-      max-width: 850px;
-      margin: 0 auto;
-    }
+.conversation-list {
+  flex: 1;
+  overflow-y: auto;
+}
 
-    .input-box {
-      display: flex;
-      gap: 10px;
-      background: #171f34;
-      border: 1px solid #384461;
-      border-radius: 16px;
-      padding: 10px;
-    }
+.conversation-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 10px;
+  margin-bottom: 4px;
+  border-radius: 10px;
+  color: #aab5cb;
+  font-size: 12px;
+  cursor: pointer;
+  transition: .2s;
+}
 
-    textarea {
-      flex: 1;
-      resize: none;
-      border: none;
-      outline: none;
-      background: transparent;
-      color: white;
-      font-family: inherit;
-      font-size: 16px;
-      padding: 10px;
-      min-height: 45px;
-    }
+.conversation-item:hover,
+.conversation-item.active {
+  background: #1b243b;
+  color: white;
+}
 
-    .send {
-      background: #7486ff;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 0 22px;
-      cursor: pointer;
-      font-size: 15px;
-    }
+.conversation-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  flex: 1;
+}
 
-    .send:disabled {
-      opacity: .5;
-      cursor: wait;
-    }
+.delete-chat {
+  background: transparent;
+  color: #68758f;
+  border: none;
+  font-size: 15px;
+  opacity: 0;
+}
 
-    .note {
-      text-align: center;
-      font-size: 11px;
-      color: #77819b;
-      margin-top: 12px;
-    }
+.conversation-item:hover .delete-chat {
+  opacity: 1;
+}
 
-    @media (max-width: 650px) {
-      .sidebar { display: none; }
-      .welcome h1 { font-size: 27px; }
-      header { padding: 15px; }
-    }
-  </style>
+.delete-chat:hover {
+  color: #ff7777;
+}
+
+.sidebar-footer {
+  border-top: 1px solid var(--border);
+  padding-top: 15px;
+  margin-top: 12px;
+}
+
+.memory-btn {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: 10px;
+  text-align: right;
+  color: #9aa6bf;
+  font-size: 12px;
+  border-radius: 9px;
+}
+
+.memory-btn:hover {
+  background: #1b243b;
+  color: #ff8b8b;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+  background:
+    radial-gradient(ellipse at 50% -20%, #28204c45, transparent 55%),
+    var(--bg);
+}
+
+.topbar {
+  height: 70px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  border-bottom: 1px solid #202940;
+  background: #090d19c9;
+  backdrop-filter: blur(12px);
+}
+
+.topbar-title {
+  font-size: 13px;
+  color: #a5b0c8;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: #91a0ba;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #5ed9a0;
+  box-shadow: 0 0 8px #5ed9a055;
+}
+
+.mobile-menu {
+  display: none;
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 23px;
+}
+
+.chat {
+  flex: 1;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  padding: 30px 20px;
+}
+
+.chat-inner {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.welcome {
+  max-width: 680px;
+  margin: 9vh auto 35px;
+  text-align: center;
+  animation: fadeUp .6s ease;
+}
+
+.welcome-symbol {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 25px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  font-size: 35px;
+  background: linear-gradient(135deg, #8b7cff20, #4c9fff20);
+  border: 1px solid #8175ff40;
+  box-shadow: 0 0 60px #7565ff12;
+}
+
+.welcome h1 {
+  font-size: clamp(25px, 4vw, 38px);
+  font-weight: 800;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, #f5f4ff, #b8b0ff, #83d8ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.welcome p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 2.2;
+}
+
+.suggestions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  max-width: 600px;
+  margin: 30px auto 0;
+}
+
+.suggestion {
+  text-align: right;
+  background: #11192a;
+  border: 1px solid #273149;
+  border-radius: 13px;
+  padding: 15px;
+  color: #aeb9d0;
+  font-size: 12px;
+  line-height: 1.8;
+  transition: .2s;
+}
+
+.suggestion:hover {
+  border-color: #766aff;
+  background: #171e34;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.message {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0;
+  animation: fadeUp .25s ease;
+}
+
+.message.user {
+  justify-content: flex-start;
+}
+
+.message.bot {
+  justify-content: flex-start;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  font-size: 16px;
+}
+
+.bot .avatar {
+  background: linear-gradient(135deg, #8b7cff, #4c9fff);
+}
+
+.user .avatar {
+  background: #27314c;
+}
+
+.bubble {
+  max-width: calc(100% - 50px);
+  padding: 14px 18px;
+  border-radius: 16px;
+  line-height: 2;
+  font-size: 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.user .bubble {
+  background: var(--user);
+  border: 1px solid #303c5c;
+  border-top-right-radius: 5px;
+}
+
+.bot .bubble {
+  background: #111827;
+  border: 1px solid #222d43;
+  border-top-right-radius: 5px;
+}
+
+.typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 3px;
+}
+
+.typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8b7cff;
+  animation: pulse 1.2s infinite;
+}
+
+.typing span:nth-child(2) {
+  animation-delay: .2s;
+}
+
+.typing span:nth-child(3) {
+  animation-delay: .4s;
+}
+
+.input-area {
+  flex-shrink: 0;
+  width: 100%;
+  padding: 15px 20px 22px;
+}
+
+.input-inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.input-box {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #141c2d;
+  border: 1px solid #313d57;
+  border-radius: 18px;
+  box-shadow: 0 10px 45px #00000020;
+  transition: border .2s, box-shadow .2s;
+}
+
+.input-box:focus-within {
+  border-color: #776bff;
+  box-shadow: 0 0 0 3px #776bff12;
+}
+
+textarea {
+  flex: 1;
+  resize: none;
+  max-height: 180px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  padding: 10px 8px;
+  line-height: 1.8;
+  min-height: 44px;
+}
+
+textarea::placeholder {
+  color: #68758f;
+}
+
+.send {
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #8b7cff, #637dff);
+  color: white;
+  font-size: 20px;
+  transition: .2s;
+  box-shadow: 0 4px 15px #7565ff30;
+}
+
+.send:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 20px #7565ff50;
+}
+
+.send:disabled {
+  opacity: .45;
+  cursor: wait;
+  transform: none;
+}
+
+.note {
+  text-align: center;
+  font-size: 10px;
+  color: #5e6b85;
+  margin-top: 12px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 25px;
+  left: 25px;
+  padding: 12px 18px;
+  background: #1d2940;
+  border: 1px solid #354563;
+  border-radius: 12px;
+  font-size: 12px;
+  color: white;
+  z-index: 50;
+  animation: fadeUp .3s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 60%, 100% { opacity: .35; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-4px); }
+}
+
+@media (max-width: 760px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    transform: translateX(100%);
+    box-shadow: -20px 0 60px #0005;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .mobile-menu {
+    display: block;
+  }
+
+  .topbar {
+    height: 60px;
+    padding: 0 15px;
+  }
+
+  .chat {
+    padding: 18px 12px;
+  }
+
+  .welcome {
+    margin-top: 5vh;
+  }
+
+  .welcome h1 {
+    font-size: 26px;
+  }
+
+  .welcome p {
+    font-size: 12px;
+  }
+
+  .suggestions {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .suggestion {
+    padding: 12px;
+  }
+
+  .bubble {
+    font-size: 13px;
+    padding: 12px 14px;
+  }
+
+  .input-area {
+    padding: 10px 12px 15px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <aside class="sidebar">
-    <div class="logo">✦ Agentino</div>
-    <button class="new-chat" onclick="newChat()">＋ گفت‌وگوی جدید</button>
-  </aside>
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-icon">✦</div>
+    <div class="brand-name">Agent<span>ino</span></div>
+  </div>
 
-  <main class="main">
-    <header>ایجنتینو | مشاور هوشمند تو</header>
+  <button class="new-chat" onclick="newChat()">
+    <span>＋</span> گفت‌وگوی جدید
+  </button>
 
-    <section class="welcome" id="welcome">
-      <h1>سلام! من ایجنتینو هستم 👋</h1>
-      <p>
-        ایده‌هات رو با من در میون بذار.<br>
-        با هم راه‌حل پیدا می‌کنیم و قدم‌به‌قدم جلو می‌ریم.
-      </p>
-    </section>
+  <div class="sidebar-label">گفتگوهای اخیر</div>
+  <div class="conversation-list" id="conversationList"></div>
 
-    <section class="chat" id="chat"></section>
+  <div class="sidebar-footer">
+    <button class="memory-btn" onclick="clearMemory()">
+      🗑 پاک کردن حافظه و گفتگوها
+    </button>
+  </div>
+</aside>
 
-    <div class="input-area">
-      <div class="input-box">
-        <textarea id="message" placeholder="سؤالت رو اینجا بنویس..." rows="1"></textarea>
-        <button class="send" id="sendButton" onclick="sendMessage()">ارسال ↑</button>
-      </div>
-      <div class="note">ایجنتینو ممکن است اشتباه کند؛ پاسخ‌ها را بررسی کن.</div>
+<main class="main">
+
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-title">ایجنتینو <span style="color:#596782">|</span> مشاور هوشمند تو</div>
     </div>
-  </main>
 
-  <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwF_I4ZtB34zoPh9fCEiRa4oX9k6meRGCU9kkrXErLc9GvjGLPOIZfMdfuQLPYStqyF/exec";
+    <div class="status">
+      <span class="status-dot"></span>
+      آماده گفتگو
+    </div>
+  </header>
 
-    const chat = document.getElementById("chat");
-    const input = document.getElementById("message");
-    const welcome = document.getElementById("welcome");
-    const sendButton = document.getElementById("sendButton");
+  <section class="chat" id="chat">
+    <div class="chat-inner" id="chatInner">
 
-    function addMessage(text, type) {
-      const div = document.createElement("div");
-      div.className = "message " + type;
-      div.textContent = text;
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
-      return div;
+      <div class="welcome" id="welcome">
+        <div class="welcome-symbol">✦</div>
+        <h1>از کجا شروع کنیم؟</h1>
+        <p>
+          سلام! من ایجنتینو هستم.<br>
+          بیا ایده‌ها و چالش‌هات رو با هم به نتیجه تبدیل کنیم.
+        </p>
+
+        <div class="suggestions">
+          <button class="suggestion" onclick="useSuggestion('می‌خواهم یک کسب‌وکار راه‌اندازی کنم. از کجا شروع کنم؟')">
+            💡 می‌خواهم کسب‌وکار راه بیندازم
+          </button>
+
+          <button class="suggestion" onclick="useSuggestion('یک ایده دارم. کمکم کن آن را بررسی و اعتبارسنجی کنم.')">
+            🚀 بررسی و اعتبارسنجی ایده
+          </button>
+
+          <button class="suggestion" onclick="useSuggestion('می‌خواهم درآمدم را افزایش بدهم. چه راه‌هایی دارم؟')">
+            📈 افزایش درآمد
+          </button>
+
+          <button class="suggestion" onclick="useSuggestion('یک مشکل دارم و نمی‌دانم چطور حلش کنم. کمکم کن.')">
+            🎯 حل یک مسئله
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="input-area">
+    <div class="input-inner">
+      <div class="input-box">
+        <textarea id="message" placeholder="هر چیزی که در ذهنته بنویس..." rows="1"></textarea>
+        <button class="send" id="sendButton" onclick="sendMessage()">↑</button>
+      </div>
+      <div class="note">ایجنتینو همراه تو برای فکر کردن و اقدام کردن ✦</div>
+    </div>
+  </div>
+
+</main>
+
+<div id="toastContainer"></div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwF_I4ZtB34zoPh9fCEiRa4oX9k6meRGCU9kkrXErLc9GvjGLPOIZfMdfuQLPYStqyF/exec";
+
+const chat = document.getElementById("chat");
+const chatInner = document.getElementById("chatInner");
+const input = document.getElementById("message");
+const sendButton = document.getElementById("sendButton");
+const conversationList = document.getElementById("conversationList");
+const sidebar = document.getElementById("sidebar");
+
+const STORAGE_USER = "agentino_user_id";
+const STORAGE_CONVERSATION = "agentino_conversation_id";
+
+function getId() {
+  return crypto.randomUUID
+    ? crypto.randomUUID()
+    : Date.now() + "_" + Math.random().toString(36).slice(2);
+}
+
+let userId = localStorage.getItem(STORAGE_USER);
+
+if (!userId) {
+  userId = "user_" + getId();
+  localStorage.setItem(STORAGE_USER, userId);
+}
+
+let conversationId =
+  localStorage.getItem(STORAGE_CONVERSATION) || "";
+
+let isSending = false;
+
+
+// ارتباط با بک‌اند
+function apiRequest(action, params = {}) {
+  return new Promise((resolve, reject) => {
+    const callbackName =
+      "agentinoCallback_" + Date.now() + "_" +
+      Math.floor(Math.random() * 100000);
+
+    const script = document.createElement("script");
+
+    const timeout = setTimeout(() => {
+      cleanup();
+      reject(new Error("زمان پاسخ‌گویی تمام شد. دوباره تلاش کن."));
+    }, 60000);
+
+    function cleanup() {
+      clearTimeout(timeout);
+      delete window[callbackName];
+      script.remove();
     }
 
-    function askAgentino(message) {
-      return new Promise((resolve, reject) => {
-        const callbackName =
-          "agentinoCallback_" + Date.now() + "_" +
-          Math.floor(Math.random() * 100000);
+    window[callbackName] = function(result) {
+      cleanup();
 
-        const script = document.createElement("script");
-        const timeout = setTimeout(() => {
-          cleanup();
-          reject(new Error("زمان پاسخ‌گویی تمام شد. دوباره تلاش کن."));
-        }, 60000);
+      if (result && result.success) {
+        resolve(result);
+      } else {
+        reject(new Error(result?.error || "پاسخی دریافت نشد."));
+      }
+    };
 
-        function cleanup() {
-          clearTimeout(timeout);
-          delete window[callbackName];
-          script.remove();
+    const query = new URLSearchParams({
+      action: action,
+      callback: callbackName,
+      userId: userId,
+      ...params
+    });
+
+    script.onerror = function() {
+      cleanup();
+      reject(new Error("ارتباط با سرویس برقرار نشد."));
+    };
+
+    script.src = API_URL + "?" + query.toString();
+    document.body.appendChild(script);
+  });
+}
+
+
+// نمایش پیام
+function addMessage(text, type) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "message " + type;
+
+  const avatar = document.createElement("div");
+  avatar.className = "avatar";
+  avatar.textContent = type === "bot" ? "✦" : "👤";
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = text;
+
+  wrapper.appendChild(avatar);
+  wrapper.appendChild(bubble);
+  chatInner.appendChild(wrapper);
+
+  chat.scrollTop = chat.scrollHeight;
+
+  return bubble;
+}
+
+
+// ساخت گفتگوی جدید
+function newChat() {
+  if (isSending) return;
+
+  conversationId = "chat_" + getId();
+  localStorage.setItem(STORAGE_CONVERSATION, conversationId);
+
+  chatInner.innerHTML = "";
+  showWelcome();
+  input.value = "";
+
+  sidebar.classList.remove("open");
+  refreshConversations();
+}
+
+
+// صفحه خوشامد
+function showWelcome() {
+  const welcome = document.createElement("div");
+  welcome.className = "welcome";
+  welcome.id = "welcome";
+
+  welcome.innerHTML = `
+    <div class="welcome-symbol">✦</div>
+    <h1>از کجا شروع کنیم؟</h1>
+    <p>
+      سلام! من ایجنتینو هستم.<br>
+      بیا ایده‌ها و چالش‌هات رو با هم به نتیجه تبدیل کنیم.
+    </p>
+    <div class="suggestions">
+      <button class="suggestion" onclick="useSuggestion('می‌خواهم یک کسب‌وکار راه‌اندازی کنم. از کجا شروع کنم؟')">
+        💡 می‌خواهم کسب‌وکار راه بیندازم
+      </button>
+      <button class="suggestion" onclick="useSuggestion('یک ایده دارم. کمکم کن آن را بررسی و اعتبارسنجی کنم.')">
+        🚀 بررسی و اعتبارسنجی ایده
+      </button>
+      <button class="suggestion" onclick="useSuggestion('می‌خواهم درآمدم را افزایش بدهم. چه راه‌هایی دارم؟')">
+        📈 افزایش درآمد
+      </button>
+      <button class="suggestion" onclick="useSuggestion('یک مشکل دارم و نمی‌دانم چطور حلش کنم. کمکم کن.')">
+        🎯 حل یک مسئله
+      </button>
+    </div>
+  `;
+
+  chatInner.appendChild(welcome);
+}
+
+
+// ارسال پیام
+async function sendMessage() {
+  const message = input.value.trim();
+
+  if (!message || isSending) return;
+
+  if (!conversationId) {
+    conversationId = "chat_" + getId();
+    localStorage.setItem(STORAGE_CONVERSATION, conversationId);
+  }
+
+  const welcome = document.getElementById("welcome");
+  if (welcome) welcome.remove();
+
+  addMessage(message, "user");
+  input.value = "";
+  input.style.height = "auto";
+
+  isSending = true;
+  sendButton.disabled = true;
+
+  const bubble = addMessage("", "bot");
+
+  bubble.innerHTML = `
+    <div class="typing">
+      <span></span><span></span><span></span>
+    </div>
+  `;
+
+  try {
+    const result = await apiRequest("chat", {
+      conversationId: conversationId,
+      message: message
+    });
+
+    bubble.textContent = result.reply;
+
+    refreshConversations();
+
+  } catch (error) {
+    bubble.textContent =
+      "متأسفم، مشکلی پیش آمد:\n" + error.message;
+  } finally {
+    isSending = false;
+    sendButton.disabled = false;
+    input.focus();
+    chat.scrollTop = chat.scrollHeight;
+  }
+}
+
+
+// بارگذاری گفتگوهای قبلی
+async function refreshConversations() {
+  try {
+    const result = await apiRequest("history");
+
+    conversationList.innerHTML = "";
+
+    result.conversations.forEach(function(item) {
+      const row = document.createElement("div");
+      row.className = "conversation-item";
+
+      if (item.id === conversationId) {
+        row.classList.add("active");
+      }
+
+      const icon = document.createElement("span");
+      icon.textContent = "◈";
+
+      const title = document.createElement("div");
+      title.className = "conversation-title";
+      title.textContent = item.title || "گفتگوی جدید";
+
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "delete-chat";
+      deleteButton.textContent = "×";
+      deleteButton.title = "حذف گفتگو";
+
+      deleteButton.onclick = async function(event) {
+        event.stopPropagation();
+
+        if (!confirm("این گفتگو برای همیشه حذف شود؟")) {
+          return;
         }
 
-        window[callbackName] = function(result) {
-          cleanup();
+        try {
+          await apiRequest("deleteConversation", {
+            conversationId: item.id
+          });
 
-          if (result && result.success && result.reply) {
-            resolve(result.reply);
-          } else {
-            reject(new Error(result?.error || "پاسخی دریافت نشد."));
+          if (item.id === conversationId) {
+            newChat();
           }
-        };
 
-        const params = new URLSearchParams({
-          message: message,
-          callback: callbackName
-        });
+          refreshConversations();
+          showToast("گفتگو حذف شد.");
 
-        script.onerror = function() {
-          cleanup();
-          reject(new Error("ارتباط با سرویس برقرار نشد."));
-        };
+        } catch (error) {
+          showToast(error.message);
+        }
+      };
 
-        script.src = API_URL + "?" + params.toString();
-        document.body.appendChild(script);
-      });
-    }
+      row.onclick = function() {
+        loadConversation(item.id);
+      };
 
-    async function sendMessage() {
-      const message = input.value.trim();
+      row.appendChild(icon);
+      row.appendChild(title);
+      row.appendChild(deleteButton);
 
-      if (!message || sendButton.disabled) return;
-
-      welcome.style.display = "none";
-      addMessage(message, "user");
-      input.value = "";
-
-      sendButton.disabled = true;
-      sendButton.textContent = "...";
-
-      const loading = addMessage("ایجنتینو در حال فکر کردن است... ✨", "bot");
-
-      try {
-        const answer = await askAgentino(message);
-        loading.textContent = answer;
-      } catch (error) {
-        loading.textContent = "متأسفم، مشکلی پیش آمد:\n" + error.message;
-      } finally {
-        sendButton.disabled = false;
-        sendButton.textContent = "ارسال ↑";
-        chat.scrollTop = chat.scrollHeight;
-      }
-    }
-
-    function newChat() {
-      chat.innerHTML = "";
-      welcome.style.display = "block";
-      input.value = "";
-    }
-
-    input.addEventListener("keydown", function(event) {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        sendMessage();
-      }
+      conversationList.appendChild(row);
     });
-  </script>
+
+  } catch (error) {
+    console.log("History:", error.message);
+  }
+}
+
+
+// بارگذاری گفتگو
+async function loadConversation(id) {
+  if (isSending) return;
+
+  conversationId = id;
+  localStorage.setItem(STORAGE_CONVERSATION, id);
+
+  chatInner.innerHTML = "";
+  sidebar.classList.remove("open");
+
+  try {
+    const result = await apiRequest("load", {
+      conversationId: id
+    });
+
+    if (!result.messages.length) {
+      showWelcome();
+      return;
+    }
+
+    result.messages.forEach(function(item) {
+      addMessage(
+        item.message,
+        item.role === "user" ? "user" : "bot"
+      );
+    });
+
+  } catch (error) {
+    showToast(error.message);
+  }
+
+  refreshConversations();
+}
+
+
+// پاک کردن حافظه
+async function clearMemory() {
+  if (isSending) return;
+
+  const confirmed = confirm(
+    "تمام گفتگوها و حافظه شما برای همیشه پاک شود؟"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await apiRequest("clearMemory");
+
+    conversationId = "";
+    localStorage.removeItem(STORAGE_CONVERSATION);
+
+    chatInner.innerHTML = "";
+    showWelcome();
+
+    refreshConversations();
+    showToast("حافظه و گفتگوها پاک شدند.");
+
+  } catch (error) {
+    showToast(error.message);
+  }
+}
+
+
+// پیشنهادهای شروع
+function useSuggestion(text) {
+  input.value = text;
+  sendMessage();
+}
+
+
+// نمایش پیام موقت
+function showToast(text) {
+  const container = document.getElementById("toastContainer");
+  const toast = document.createElement("div");
+
+  toast.className = "toast";
+  toast.textContent = text;
+
+  container.appendChild(toast);
+
+  setTimeout(function() {
+    toast.remove();
+  }, 3500);
+}
+
+
+// منوی موبایل
+function toggleSidebar() {
+  sidebar.classList.toggle("open");
+}
+
+
+// تنظیم ارتفاع خودکار ورودی
+input.addEventListener("input", function() {
+  this.style.height = "auto";
+  this.style.height = Math.min(this.scrollHeight, 180) + "px";
+});
+
+
+// ارسال با Enter
+input.addEventListener("keydown", function(event) {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    sendMessage();
+  }
+});
+
+
+// راه‌اندازی اولیه
+if (conversationId) {
+  loadConversation(conversationId);
+} else {
+  showWelcome();
+}
+
+refreshConversations();
+</script>
 
 </body>
 </html>
