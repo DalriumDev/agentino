@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -28,13 +28,21 @@
   padding: 0;
 }
 
+html {
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'Vazirmatn', Tahoma, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
   display: flex;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 button, textarea {
@@ -113,6 +121,7 @@ button {
 .conversation-list {
   flex: 1;
   overflow-y: auto;
+  min-height: 100px;
 }
 
 .conversation-item {
@@ -184,6 +193,7 @@ button {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 100vh;
   position: relative;
   background:
     radial-gradient(ellipse at 50% -20%, #28204c45, transparent 55%),
@@ -191,12 +201,12 @@ button {
 }
 
 .topbar {
-  height: 70px;
+  min-height: 70px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 30px;
+  padding: 12px 30px;
   border-bottom: 1px solid #202940;
   background: #090d19c9;
   backdrop-filter: blur(12px);
@@ -233,7 +243,8 @@ button {
 
 .chat {
   flex: 1;
-  overflow-y: auto;
+  min-height: 300px;
+  overflow-y: visible;
   scroll-behavior: smooth;
   padding: 30px 20px;
 }
@@ -389,6 +400,7 @@ button {
   flex-shrink: 0;
   width: 100%;
   padding: 15px 20px 22px;
+  background: var(--bg);
 }
 
 .input-inner {
@@ -487,11 +499,16 @@ textarea::placeholder {
 }
 
 @media (max-width: 760px) {
+  body {
+    display: block;
+  }
+
   .sidebar {
     position: fixed;
     top: 0;
     bottom: 0;
     right: 0;
+    height: 100dvh;
     transform: translateX(100%);
     box-shadow: -20px 0 60px #0005;
   }
@@ -504,9 +521,14 @@ textarea::placeholder {
     display: block;
   }
 
+  .main {
+    width: 100%;
+    min-height: 100vh;
+  }
+
   .topbar {
-    height: 60px;
-    padding: 0 15px;
+    min-height: 60px;
+    padding: 10px 15px;
   }
 
   .chat {
@@ -660,8 +682,6 @@ let conversationId =
 
 let isSending = false;
 
-
-// ارتباط با بک‌اند
 function apiRequest(action, params = {}) {
   return new Promise((resolve, reject) => {
     const callbackName =
@@ -708,8 +728,6 @@ function apiRequest(action, params = {}) {
   });
 }
 
-
-// نمایش پیام
 function addMessage(text, type) {
   const wrapper = document.createElement("div");
   wrapper.className = "message " + type;
@@ -731,8 +749,6 @@ function addMessage(text, type) {
   return bubble;
 }
 
-
-// ساخت گفتگوی جدید
 function newChat() {
   if (isSending) return;
 
@@ -747,8 +763,6 @@ function newChat() {
   refreshConversations();
 }
 
-
-// صفحه خوشامد
 function showWelcome() {
   const welcome = document.createElement("div");
   welcome.className = "welcome";
@@ -780,8 +794,6 @@ function showWelcome() {
   chatInner.appendChild(welcome);
 }
 
-
-// ارسال پیام
 async function sendMessage() {
   const message = input.value.trim();
 
@@ -817,7 +829,6 @@ async function sendMessage() {
     });
 
     bubble.textContent = result.reply;
-
     refreshConversations();
 
   } catch (error) {
@@ -827,12 +838,13 @@ async function sendMessage() {
     isSending = false;
     sendButton.disabled = false;
     input.focus();
-    chat.scrollTop = chat.scrollHeight;
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth"
+    });
   }
 }
 
-
-// بارگذاری گفتگوهای قبلی
 async function refreshConversations() {
   try {
     const result = await apiRequest("history");
@@ -899,8 +911,6 @@ async function refreshConversations() {
   }
 }
 
-
-// بارگذاری گفتگو
 async function loadConversation(id) {
   if (isSending) return;
 
@@ -934,8 +944,6 @@ async function loadConversation(id) {
   refreshConversations();
 }
 
-
-// پاک کردن حافظه
 async function clearMemory() {
   if (isSending) return;
 
@@ -962,15 +970,11 @@ async function clearMemory() {
   }
 }
 
-
-// پیشنهادهای شروع
 function useSuggestion(text) {
   input.value = text;
   sendMessage();
 }
 
-
-// نمایش پیام موقت
 function showToast(text) {
   const container = document.getElementById("toastContainer");
   const toast = document.createElement("div");
@@ -985,21 +989,15 @@ function showToast(text) {
   }, 3500);
 }
 
-
-// منوی موبایل
 function toggleSidebar() {
   sidebar.classList.toggle("open");
 }
 
-
-// تنظیم ارتفاع خودکار ورودی
 input.addEventListener("input", function() {
   this.style.height = "auto";
   this.style.height = Math.min(this.scrollHeight, 180) + "px";
 });
 
-
-// ارسال با Enter
 input.addEventListener("keydown", function(event) {
   if (event.key === "Enter" && !event.shiftKey) {
     event.preventDefault();
@@ -1007,8 +1005,6 @@ input.addEventListener("keydown", function(event) {
   }
 });
 
-
-// راه‌اندازی اولیه
 if (conversationId) {
   loadConversation(conversationId);
 } else {
@@ -1020,3 +1016,4 @@ refreshConversations();
 
 </body>
 </html>
+```
